@@ -1,0 +1,4 @@
+/_build*
+/deps*
+/ui/build*
+/ui/node_modules*
