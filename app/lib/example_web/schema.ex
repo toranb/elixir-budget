@@ -2,6 +2,7 @@ defmodule ExampleWeb.Schema do
   use Absinthe.Schema
 
   import_types Absinthe.Type.Custom
+  import_types ExampleWeb.Schema.CategoryTypes
   import_types ExampleWeb.Schema.TransactionTypes
 
   alias ExampleWeb.Resolvers
@@ -22,6 +23,7 @@ defmodule ExampleWeb.Schema do
       arg :description, non_null(:string)
       arg :amount, non_null(:integer)
       arg :date, non_null(:naive_datetime)
+      arg :category_id, non_null(:string)
 
       resolve &Resolvers.Transaction.create_transaction/3
     end

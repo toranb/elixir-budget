@@ -42,6 +42,20 @@ defmodule Example.TransactionsTest do
     assert category_id == @category_id_two
   end
 
+  test "insert will hydrate associated category" do
+    insert_categories([@category_one])
+    insert_users([@user_one])
+
+    result = @transaction_one |> Map.put(:date, @date) |> Transactions.insert
+    {:ok, %Transaction{description: description, amount: amount, date: date, category: category}} = result
+    assert description == "one"
+    assert amount == 100
+    assert date == @date
+    %Example.Category{id: id, name: name} = category
+    assert id == @category_id_one
+    assert name == "foo"
+  end
+
   defp insert_users(users) do
     Enum.each(users, fn(attrs) ->
       %User{}
