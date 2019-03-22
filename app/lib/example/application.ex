@@ -14,6 +14,8 @@ defmodule Example.Application do
       Example.Logon
     ]
 
+    :ets.new(:users_table, [:named_table, :set, :public, read_concurrency: true])
+
     # See https://hexdocs.pm/elixir/Supervisor.html
     # for other strategies and supported options
     opts = [strategy: :one_for_one, name: Example.Supervisor]

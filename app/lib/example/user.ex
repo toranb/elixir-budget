@@ -22,14 +22,25 @@ defmodule Example.User do
   end
 
   def transform(users) do
-    Enum.reduce(users, %{}, fn(%Example.User{id: id, username: username, hash: hash}, acc) ->
-      Map.put(acc, id, {username, hash})
+    Enum.each(users, fn(%Example.User{id: id, username: username, hash: hash}) ->
+      :ets.insert(:users_table, {id, {username, hash}})
     end)
   end
 
-  def find_with_username_and_password(users, username, password) do
-    case Enum.filter(users, fn {_, {k, _}} -> k == username end) do
-      [{id, {_username, hash}}] ->
+  def find_with_id(id) do
+    case :ets.lookup(:users_table, id) do
+      [{_, {username, _}}] ->
+        username
+      [] ->
+        nil
+    end
+  end
+
+  def find_with_username_and_password(username, password) do
+    users = :ets.match(:users_table, {:"$1", :"$2"})
+
+    case Enum.filter(users, fn [_, {k, _}] -> k == username end) do
+      [[id, {_username, hash}]] ->
         if Example.Password.verify(password, hash) do
           id
         end

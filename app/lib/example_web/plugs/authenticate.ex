@@ -10,14 +10,14 @@ defmodule ExampleWeb.Authenticate do
       nil ->
         conn
       id ->
-        {username} = Example.Logon.get(:logon, "#{id}")
+        username = Example.Logon.get(:logon, "#{id}")
         assign(conn, :current_user, %{id: id, username: username})
     end
   end
 
   def redirect_unauthorized(conn, _opts) do
     current_user = Map.get(conn.assigns, :current_user)
-    if current_user != nil do
+    if current_user != nil and current_user.username != nil do
       conn
     else
       conn

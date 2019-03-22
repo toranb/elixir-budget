@@ -14,8 +14,8 @@ defmodule Example.Logon do
 
   @impl GenServer
   def init(:ok) do
-    state = Users.all() |> User.transform
-    {:ok, state, {:continue, :init}}
+    Users.all() |> User.transform
+    {:ok, nil, {:continue, :init}}
   end
 
   @impl GenServer
@@ -23,28 +23,16 @@ defmodule Example.Logon do
     {:noreply, state}
   end
 
-  def get(name, id) do
-    GenServer.call(via(name), {:get, id})
+  def get(_name, id) do
+    User.find_with_id(id)
   end
 
-  def get_by_username_and_password(name, username, password) do
-    GenServer.call(via(name), {:get, username, password})
+  def get_by_username_and_password(_name, username, password) do
+    User.find_with_username_and_password(username, password)
   end
 
   def put(name, username, password) do
     GenServer.call(via(name), {:put, username, password})
-  end
-
-  @impl GenServer
-  def handle_call({:get, id}, _timeout, state) do
-    {username, _} = Map.get(state, id)
-    {:reply, {username}, state}
-  end
-
-  @impl GenServer
-  def handle_call({:get, username, password}, _timeout, state) do
-    id = User.find_with_username_and_password(state, username, password)
-    {:reply, id, state}
   end
 
   @impl GenServer
@@ -54,8 +42,8 @@ defmodule Example.Logon do
     changeset = User.changeset(%User{}, %{id: id, username: username, password: password, hash: hash})
     case Users.insert(changeset) do
       {:ok, _result} ->
-        new_state = Map.put(state, id, {username, hash})
-        {:reply, {:ok, {id, username}}, new_state}
+        :ets.insert(:users_table, {id, {username, hash}})
+        {:reply, {:ok, {id, username}}, state}
       {:error, changeset} ->
         {_key, {message, _}} = Enum.find(changeset.errors, fn(i) -> i end)
         {:reply, {:error, {id, message}}, state}

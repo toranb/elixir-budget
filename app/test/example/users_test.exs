@@ -1,13 +1,17 @@
 defmodule Example.UsersTest do
   use Example.DataCase, async: true
 
+  require Logger
+
   alias Example.Repo
   alias Example.User
   alias Example.Users
   alias Example.Password
 
   @id "88EA874FB8A1459439C74D11A78BA0CCB24B4137B9E16B6A7FB63D1FBB42B818"
-  @valid_attrs %{id: @id, username: "toran", password: "abcd1234"}
+  @password "abcd1234"
+  @username "toran"
+  @valid_attrs %{id: @id, username: @username, password: @password}
 
   test "changeset is invalid if username is too short" do
     attrs = @valid_attrs |> Map.put(:username, "abc")
@@ -77,47 +81,114 @@ defmodule Example.UsersTest do
     assert Map.get(changeset, :errors) == [id: {"username already exists", [constraint: :unique, constraint_name: "users_pkey"]}]
   end
 
-  test "transform returns map with id, username and hash values" do
+  test "transform inserts id, username and hash values into ets for each user" do
+    create_ets_table()
+
+    hash_one = "987654321"
+    attrs = @valid_attrs |> Map.put(:hash, hash_one)
+
+    hash_two = "54545454"
+    password_two = "defg4567"
     two = "875C807AE0F492AAF5897D7693A628AE5E54801CD73C651EC98088898FA56E0C"
-    jarrod_attrs = %{id: two, username: "jarrod", password: "abcd1234"}
+    jarrod_attrs = %{id: two, username: "jarrod", password: password_two, hash: hash_two}
 
     %User{}
       |> User.changeset(jarrod_attrs)
       |> Repo.insert
 
     %User{}
-      |> User.changeset(@valid_attrs)
+      |> User.changeset(attrs)
       |> Repo.insert
 
-    result = Users.all() |> User.transform
+    Users.all() |> User.transform
 
-    assert Map.keys(result) == [two, @id]
-    assert Map.get(result, two) == {"jarrod", nil}
-    assert Map.get(result, @id) == {"toran", nil}
+    results = :ets.match(:users_table, {:"$1", :"$2"})
+    users = Enum.reduce(results, %{}, fn([id, {username, hash}], acc) ->
+      Map.put(acc, id, {username, hash})
+    end)
+
+    assert Map.keys(users) == [two, @id]
+    assert Map.get(users, two) == {"jarrod", hash_two}
+    assert Map.get(users, @id) == {@username, hash_one}
   end
 
-
   test "find with username and password" do
-    state = %{}
-    username = "toran"
-    password = "abc123"
-    password_hash = Password.hash(password)
+    create_ets_table()
 
-    assert User.find_with_username_and_password(state, username, password) === nil
+    hash_one = Password.hash(@password)
+    attrs = @valid_attrs |> Map.put(:hash, hash_one)
 
-    new_state = Map.put(state, @id, {username, password_hash})
-    assert User.find_with_username_and_password(new_state, username, password) === @id
-    assert User.find_with_username_and_password(new_state, username, "abc12") === nil
+    password_two = "defg4567"
+    hash_two = Password.hash(password_two)
+    two = "875C807AE0F492AAF5897D7693A628AE5E54801CD73C651EC98088898FA56E0C"
+    jarrod_attrs = %{id: two, username: "jarrod", password: password_two, hash: hash_two}
+
+    %User{}
+      |> User.changeset(jarrod_attrs)
+      |> Repo.insert
+
+    %User{}
+      |> User.changeset(attrs)
+      |> Repo.insert
+
+    assert User.find_with_username_and_password(@username, @password) === nil
+
+    Users.all() |> User.transform
+
+    assert User.find_with_username_and_password(@username, @password) === @id
+    assert User.find_with_username_and_password(@username, "abc12") === nil
+    assert User.find_with_username_and_password("jarrod", password_two) === two
+    assert User.find_with_username_and_password("jarrod", "") === nil
+    assert User.find_with_username_and_password(@username, password_two) === nil
+  end
+
+  test "find with id" do
+    create_ets_table()
+
+    hash_one = Password.hash(@password)
+    attrs = @valid_attrs |> Map.put(:hash, hash_one)
 
     username_two = "jarrod"
-    password_two = "def456"
-    password_hash_two = Password.hash(password_two)
-    id_two = "962EDC73E485BC59B2DD66A6728576F741575FC69FFE88581826C01BBBACC3E9"
-    last_state = Map.put(new_state, id_two, {username_two, password_hash_two})
-    assert User.find_with_username_and_password(last_state, username, password) === @id
-    assert User.find_with_username_and_password(last_state, username_two, password_two) === id_two
-    assert User.find_with_username_and_password(last_state, username_two, "") === nil
-    assert User.find_with_username_and_password(last_state, username, password_two) === nil
+    password_two = "defg4567"
+    hash_two = Password.hash(password_two)
+    two = "875C807AE0F492AAF5897D7693A628AE5E54801CD73C651EC98088898FA56E0C"
+    jarrod_attrs = %{id: two, username: username_two, password: password_two, hash: hash_two}
+
+    %User{}
+      |> User.changeset(jarrod_attrs)
+      |> Repo.insert
+
+    %User{}
+      |> User.changeset(attrs)
+      |> Repo.insert
+
+    assert User.find_with_id(@id) === nil
+
+    Users.all() |> User.transform
+
+    assert User.find_with_id(@id) === @username
+    assert User.find_with_id(two) === username_two
+    assert User.find_with_id("x") === nil
+    assert User.find_with_id("") === nil
+    assert User.find_with_id(nil) === nil
+  end
+
+  defp create_ets_table do
+    delete_ets_table()
+
+    :ets.new(:users_table, [:named_table, :set, :public, read_concurrency: true])
+
+    rescue
+      _ ->
+        Logger.debug "create_ets_table failed"
+  end
+
+  defp delete_ets_table do
+    :ets.delete_all_objects(:users_table)
+
+    rescue
+      _ ->
+        Logger.debug "delete_ets_table failed"
   end
 
 end
