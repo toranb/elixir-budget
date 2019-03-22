@@ -14,7 +14,7 @@ defmodule ExampleWeb.PageControllerTest do
     session_id = get_session(result, :user_id)
     assert session_id == nil
 
-    login = post(conn, Routes.page_path(conn, :create, @login))
+    login = post(conn, Routes.login_path(conn, :create, @login))
     assert html_response(login, 302) =~ "redirected"
     assert get_flash(login, :error) == nil
     for {"location", value} <- login.resp_headers, do: assert value == "/budget"
@@ -25,7 +25,7 @@ defmodule ExampleWeb.PageControllerTest do
 
   test "failed login will not put user id into session", %{conn: conn} do
     credentials = %{username: "brandon", password: @password}
-    login = post(conn, Routes.page_path(conn, :create, credentials))
+    login = post(conn, Routes.login_path(conn, :create, credentials))
     assert get_flash(login, :error) == "incorrect username or password"
     session_id = get_session(login, :user_id)
     assert session_id == nil

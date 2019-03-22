@@ -1,4 +1,4 @@
-<%= form_for @conn, Routes.page_path(@conn, :create), [class: 'required-form', autocomplete: "off", autocorrect: "off", autocapitalize: "off"], fn f -> %>
+<%= form_for @conn, Routes.login_path(@conn, :create), [class: 'required-form', autocomplete: "off", autocorrect: "off", autocapitalize: "off"], fn f -> %>
   <p><%= text_input f, :username, [placeholder: "username"] %></p>
   <p><%= password_input f, :password, [placeholder: "password"] %></p>
   <p><%= submit "Sign In" %></p>

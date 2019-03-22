@@ -1,4 +1,4 @@
-defmodule ExampleWeb.PageController do
+defmodule ExampleWeb.LoginController do
   use ExampleWeb, :controller
 
   def index(conn, _params) do

@@ -2,5 +2,5 @@
   <p><%= text_input f, :username, [placeholder: "username"] %></p>
   <p><%= password_input f, :password, [placeholder: "password"] %></p>
   <p><%= submit "Sign Up" %></p>
-  <p><%= link "Sign In", to: Routes.page_path(@conn, :index) %></p>
+  <p><%= link "Sign In", to: Routes.login_path(@conn, :index) %></p>
 <% end %>

@@ -16,8 +16,8 @@ defmodule ExampleWeb.Router do
   scope "/", ExampleWeb do
     pipe_through :browser
 
-    get "/", PageController, :index
-    post "/", PageController, :create
+    get "/", LoginController, :index
+    post "/", LoginController, :create
   end
 
   scope "/budget", ExampleWeb do

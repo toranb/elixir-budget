@@ -8,7 +8,7 @@ defmodule ExampleWeb.RegistrationController do
   def create(conn, %{"username" => username, "password" => password}) do
     case Example.Logon.put(:logon, username, password) do
       {:ok, {_id, _username}} ->
-        path = Routes.page_path(conn, :index)
+        path = Routes.login_path(conn, :index)
         conn
           |> put_flash(:info, "Account Created!")
           |> redirect(to: path)
