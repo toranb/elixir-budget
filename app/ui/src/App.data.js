@@ -1,4 +1,4 @@
-import { QUERY_TRANSACTIONS } from './App';
+import { QUERY_TRANSACTIONS } from './Transactions/QueryTransactions';
 
 const mocks = [
   {
