@@ -1,5 +1,6 @@
 <%= form_for @conn, Routes.registration_path(@conn, :create), [class: 'required-form', autocomplete: "off", autocorrect: "off", autocapitalize: "off"], fn f -> %>
-  <%= text_input f, :username, [placeholder: "username"] %>
-  <%= password_input f, :password, [placeholder: "password"] %>
-  <%= submit "Sign Up" %>
+  <p><%= text_input f, :username, [placeholder: "username"] %></p>
+  <p><%= password_input f, :password, [placeholder: "password"] %></p>
+  <p><%= submit "Sign Up" %></p>
+  <p><%= link "Sign In", to: Routes.page_path(@conn, :index) %></p>
 <% end %>
