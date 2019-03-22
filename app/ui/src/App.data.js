@@ -1,6 +1,12 @@
 import { QUERY_TRANSACTIONS } from './Transactions/QueryTransactions';
 import { CREATE_TRANSACTION } from './Forms/MutateTransactions';
 
+const categories = {
+  dataset: {
+    configuration: '[{"id":"0d015d96f63a8c12d96b8399482b593f","name":"Uncategorized"},{"id":"06b9281e396db002010bde1de57262eb","name":"Auto"},{"id":"308f182147c89087faffe07e0177610e","name":"Donations"}]'
+  }
+};
+
 const mocks = [
   {
     request: {
@@ -47,4 +53,4 @@ const mocks = [
   },
 ];
 
-export { mocks };
+export { mocks, categories };

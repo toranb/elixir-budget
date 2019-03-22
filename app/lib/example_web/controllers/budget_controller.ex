@@ -1,7 +1,12 @@
 defmodule ExampleWeb.BudgetController do
   use ExampleWeb, :controller
 
+  alias Example.Collection
+
   def index(conn, _params) do
-    render(conn, "index.html")
+    {:ok, categories } =
+      Collection.all(:collection)
+      |> Phoenix.json_library().encode()
+    render(conn, "index.html", %{categories: categories})
   end
 end

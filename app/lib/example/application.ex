@@ -11,10 +11,12 @@ defmodule Example.Application do
       Example.Repo,
       ExampleWeb.Endpoint,
       {Registry, keys: :unique, name: Example.Registry},
-      Example.Logon
+      Example.Logon,
+      Example.Collection
     ]
 
     Example.UserCache.create()
+    Example.CategoryCache.create()
 
     # See https://hexdocs.pm/elixir/Supervisor.html
     # for other strategies and supported options

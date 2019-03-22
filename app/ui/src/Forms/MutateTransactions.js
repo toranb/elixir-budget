@@ -4,6 +4,7 @@ import { Mutation } from 'react-apollo';
 import { graphql } from 'react-apollo';
 import { QUERY_TRANSACTIONS } from '../Transactions/QueryTransactions';
 import { AddTransaction } from './AddTransaction';
+import PreloadWrapper from '../PreloadWrapper';
 
 export const CREATE_TRANSACTION = gql`
   mutation CreateTransaction($description: String!, $amount: Int!, $date: String!) {
@@ -16,18 +17,36 @@ export const CREATE_TRANSACTION = gql`
   }
 `;
 
-const defaults = {
-  amount: 0,
-  description: ''
-};
-
 export class MutateTransactions extends Component {
   constructor(props) {
     super(props);
 
-    this.state = defaults;
+    this.preload = this.preload.bind(this);
+    this.state = this.defaults();
     this.dispatch = this.dispatch.bind(this);
     this.reset = this.reset.bind(this);
+  }
+
+  preload() {
+    const loaded = PreloadWrapper.preload();
+    const categories = JSON.parse(loaded.dataset.configuration);
+    const defaultCategory = categories.filter((c) => c.name === 'Uncategorized');
+    const [ found ] = defaultCategory;
+    const uncategorized = found.id;
+    return {
+      categories,
+      uncategorized
+    }
+  }
+
+  defaults() {
+    const { categories, uncategorized } = this.preload();
+    return {
+      amount: 0,
+      description: '',
+      category: uncategorized,
+      categories: categories
+    };
   }
 
   dispatch(event) {
@@ -40,7 +59,7 @@ export class MutateTransactions extends Component {
   }
 
   reset() {
-    this.setState(defaults);
+    this.setState(this.defaults());
   }
 
   render() {
