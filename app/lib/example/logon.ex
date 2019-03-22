@@ -4,6 +4,7 @@ defmodule Example.Logon do
   alias Example.Hash
   alias Example.User
   alias Example.Users
+  alias Example.UserCache
   alias Example.Password
 
   def start_link(_args) do
@@ -14,7 +15,7 @@ defmodule Example.Logon do
 
   @impl GenServer
   def init(:ok) do
-    Users.all() |> User.transform
+    Users.all() |> UserCache.insert
     {:ok, nil, {:continue, :init}}
   end
 
@@ -24,11 +25,11 @@ defmodule Example.Logon do
   end
 
   def get(_name, id) do
-    User.find_with_id(id)
+    UserCache.find_with_id(id)
   end
 
   def get_by_username_and_password(_name, username, password) do
-    User.find_with_username_and_password(username, password)
+    UserCache.find_with_username_and_password(username, password)
   end
 
   def put(name, username, password) do
@@ -42,7 +43,7 @@ defmodule Example.Logon do
     changeset = User.changeset(%User{}, %{id: id, username: username, password: password, hash: hash})
     case Users.insert(changeset) do
       {:ok, _result} ->
-        :ets.insert(:users_table, {id, {username, hash}})
+        UserCache.insert(id, username, hash)
         {:reply, {:ok, {id, username}}, state}
       {:error, changeset} ->
         {_key, {message, _}} = Enum.find(changeset.errors, fn(i) -> i end)

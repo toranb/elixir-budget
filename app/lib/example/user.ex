@@ -21,33 +21,4 @@ defmodule Example.User do
       |> validate_length(:password, min: 8, max: 20, message: "password must be 8-20 characters")
   end
 
-  def transform(users) do
-    Enum.each(users, fn(%Example.User{id: id, username: username, hash: hash}) ->
-      :ets.insert(:users_table, {id, {username, hash}})
-    end)
-  end
-
-  def find_with_id(id) do
-    case :ets.lookup(:users_table, id) do
-      [{_, {username, _}}] ->
-        username
-      [] ->
-        nil
-    end
-  end
-
-  def find_with_username_and_password(username, password) do
-    users = :ets.match(:users_table, {:"$1", :"$2"})
-
-    case Enum.filter(users, fn [_, {k, _}] -> k == username end) do
-      [[id, {_username, hash}]] ->
-        if Example.Password.verify(password, hash) do
-          id
-        end
-      [] ->
-        Example.Password.dummy_verify()
-        nil
-    end
-  end
-
 end
