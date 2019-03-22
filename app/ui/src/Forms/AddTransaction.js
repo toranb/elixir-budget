@@ -11,12 +11,13 @@ export class AddTransaction extends Component {
     event.preventDefault();
 
     const date = DateWrapper.format();
-    const { amount, description } = this.props.inputs;
+    const { amount, description, category } = this.props.inputs;
     this.props.createTransaction({
       variables: {
         description: description,
         amount: parseInt(amount, 10),
-        date: date
+        date: date,
+        categoryId: category
       }
     });
   }

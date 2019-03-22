@@ -20,6 +20,10 @@ export const QUERY_TRANSACTIONS = gql`
       date
       amount
       description
+      category {
+        id
+        name
+      }
     }
   }
 `;

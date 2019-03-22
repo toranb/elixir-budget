@@ -7,12 +7,17 @@ import { AddTransaction } from './AddTransaction';
 import PreloadWrapper from '../PreloadWrapper';
 
 export const CREATE_TRANSACTION = gql`
-  mutation CreateTransaction($description: String!, $amount: Int!, $date: String!) {
-    createTransaction(description: $description, amount: $amount, date: $date) {
+  mutation CreateTransaction($description: String!, $amount: Int!, $date: String!, $categoryId: String!) {
+    createTransaction(description: $description, amount: $amount, date: $date, categoryId: $categoryId) {
       id
       date
       amount
       description
+      categoryId
+      category {
+        id
+        name
+      }
     }
   }
 `;
