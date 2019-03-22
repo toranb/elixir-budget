@@ -14,11 +14,13 @@ COPY . /example
 WORKDIR /example
 
 COPY --from=react /ui/build/static ./priv/static
+COPY --from=react /ui/build/asset-manifest.json ./priv/static/asset-manifest.json
 
 RUN apt-get update
 RUN apt-get install make gcc libc-dev
 
 RUN mix deps.get && mix deps.compile && mix compile
+RUN mix run transform.exs
 RUN mix phx.digest
 
 RUN chmod +x entrypoint.sh
