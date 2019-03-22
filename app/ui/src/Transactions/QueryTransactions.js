@@ -5,7 +5,7 @@ import { TransactionList } from './TransactionList';
 
 function QueryTransactions({ data: { loading, transactions } }) {
   if (loading) {
-    return <div>Loading</div>;
+    return <div id="loading">Loading</div>;
   } else {
     return (
       <TransactionList transactions={transactions} />
