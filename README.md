@@ -1,7 +1,7 @@
 Elixir & React budget web application
 
 ```bash
-git clone https://github.com/toranb/elixir-budget-app.git example
+git clone https://github.com/toranb/elixir-budget.git example
 ```
 
 To run the app with docker
