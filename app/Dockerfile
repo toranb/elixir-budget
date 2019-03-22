@@ -20,8 +20,6 @@ RUN apt-get update
 RUN apt-get install make gcc libc-dev
 
 RUN mix deps.get && mix deps.compile && mix compile
-RUN mix run transform.exs
-RUN mix phx.digest
 
 RUN chmod +x entrypoint.sh
 
