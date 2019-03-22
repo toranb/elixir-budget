@@ -23,12 +23,22 @@ defmodule Example.Logon do
     {:noreply, state}
   end
 
+  def get(name, id) do
+    GenServer.call(via(name), {:get, id})
+  end
+
   def get_by_username_and_password(name, username, password) do
     GenServer.call(via(name), {:get, username, password})
   end
 
   def put(name, username, password) do
     GenServer.call(via(name), {:put, username, password})
+  end
+
+  @impl GenServer
+  def handle_call({:get, id}, _timeout, state) do
+    {username, _} = Map.get(state, id)
+    {:reply, {username}, state}
   end
 
   @impl GenServer
