@@ -9,6 +9,8 @@ defmodule Example.User do
     field :hash, :string
     field :password, :string, virtual: true
 
+    has_many :transactions, Example.Transaction, foreign_key: :user_id
+
     timestamps()
   end
 

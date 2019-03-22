@@ -43,6 +43,8 @@ defmodule Example.MixProject do
       {:poison, "~> 3.0"},
       {:gettext, "~> 0.11"},
       {:jason, "~> 1.0"},
+      {:absinthe_plug, "~> 1.4"},
+      {:absinthe, "~> 1.4.16"},
       {:plug_cowboy, "~> 2.0"},
       {:bcrypt_elixir, "~> 1.1"},
       {:mix_test_watch, "~> 0.8", only: :dev, runtime: false}

@@ -1,7 +1,7 @@
 defmodule ExampleWeb.Authenticate do
 
   import Phoenix.Controller, only: [redirect: 2]
-  import Plug.Conn, only: [get_session: 2, assign: 3, put_session: 3, halt: 1]
+  import Plug.Conn, only: [get_session: 2, assign: 3, put_session: 3, halt: 1, put_private: 3]
 
   alias ExampleWeb.Router.Helpers, as: Routes
 
@@ -11,7 +11,8 @@ defmodule ExampleWeb.Authenticate do
         conn
       id ->
         username = Example.Logon.get(:logon, "#{id}")
-        assign(conn, :current_user, %{id: id, username: username})
+        put_private(conn, :absinthe, %{context: %{current_user: id}})
+          |> assign(:current_user, %{id: id, username: username})
     end
   end
 

@@ -20,6 +20,9 @@ defmodule ExampleWeb.Router do
 
   pipeline :api do
     plug :accepts, ["json"]
+    plug :fetch_session
+    plug :authentication
+    plug :redirect_unauthorized
   end
 
   scope "/", ExampleWeb do
@@ -48,8 +51,10 @@ defmodule ExampleWeb.Router do
     get "/", LogoutController, :index
   end
 
-  # Other scopes may use custom stacks.
-  # scope "/api", ExampleWeb do
-  #   pipe_through :api
-  # end
+  scope "/api" do
+    pipe_through :api
+
+    forward "/graphiql", Absinthe.Plug.GraphiQL, schema: ExampleWeb.Schema
+    forward "/", Absinthe.Plug, schema: ExampleWeb.Schema
+  end
 end
