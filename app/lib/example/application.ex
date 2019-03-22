@@ -8,10 +8,10 @@ defmodule Example.Application do
   def start(_type, _args) do
     # List all child processes to be supervised
     children = [
-      # Start the endpoint when the application starts
-      ExampleWeb.Endpoint
-      # Starts a worker by calling: Example.Worker.start_link(arg)
-      # {Example.Worker, arg},
+      Example.Repo,
+      ExampleWeb.Endpoint,
+      {Registry, keys: :unique, name: Example.Registry},
+      Example.Logon
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

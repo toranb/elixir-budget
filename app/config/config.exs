@@ -7,6 +7,9 @@
 # General application configuration
 use Mix.Config
 
+config :example,
+  ecto_repos: [Example.Repo]
+
 # Configures the endpoint
 config :example, ExampleWeb.Endpoint,
   url: [host: "localhost"],

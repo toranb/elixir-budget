@@ -25,6 +25,13 @@ defmodule ExampleWeb.Router do
     get "/", BudgetController, :index
   end
 
+  scope "/signup", ExampleWeb do
+    pipe_through :browser
+
+    get "/", RegistrationController, :index
+    post "/", RegistrationController, :create
+  end
+
   # Other scopes may use custom stacks.
   # scope "/api", ExampleWeb do
   #   pipe_through :api
