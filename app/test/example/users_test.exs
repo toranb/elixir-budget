@@ -3,6 +3,8 @@ defmodule Example.UsersTest do
 
   alias Example.Repo
   alias Example.User
+  alias Example.Users
+  alias Example.Password
 
   @id "88EA874FB8A1459439C74D11A78BA0CCB24B4137B9E16B6A7FB63D1FBB42B818"
   @valid_attrs %{id: @id, username: "toran", password: "abcd1234"}
@@ -73,6 +75,49 @@ defmodule Example.UsersTest do
       |> User.changeset(@valid_attrs)
     assert {:error, changeset} = Repo.insert(duplicate)
     assert Map.get(changeset, :errors) == [id: {"username already exists", [constraint: :unique, constraint_name: "users_pkey"]}]
+  end
+
+  test "transform returns map with id, username and hash values" do
+    two = "875C807AE0F492AAF5897D7693A628AE5E54801CD73C651EC98088898FA56E0C"
+    jarrod_attrs = %{id: two, username: "jarrod", password: "abcd1234"}
+
+    %User{}
+      |> User.changeset(jarrod_attrs)
+      |> Repo.insert
+
+    %User{}
+      |> User.changeset(@valid_attrs)
+      |> Repo.insert
+
+    result = Users.all() |> User.transform
+
+    assert Map.keys(result) == [two, @id]
+    assert Map.get(result, two) == {"jarrod", nil}
+    assert Map.get(result, @id) == {"toran", nil}
+  end
+
+
+  test "find with username and password" do
+    state = %{}
+    username = "toran"
+    password = "abc123"
+    password_hash = Password.hash(password)
+
+    assert User.find_with_username_and_password(state, username, password) === nil
+
+    new_state = Map.put(state, @id, {username, password_hash})
+    assert User.find_with_username_and_password(new_state, username, password) === @id
+    assert User.find_with_username_and_password(new_state, username, "abc12") === nil
+
+    username_two = "jarrod"
+    password_two = "def456"
+    password_hash_two = Password.hash(password_two)
+    id_two = "962EDC73E485BC59B2DD66A6728576F741575FC69FFE88581826C01BBBACC3E9"
+    last_state = Map.put(new_state, id_two, {username_two, password_hash_two})
+    assert User.find_with_username_and_password(last_state, username, password) === @id
+    assert User.find_with_username_and_password(last_state, username_two, password_two) === id_two
+    assert User.find_with_username_and_password(last_state, username_two, "") === nil
+    assert User.find_with_username_and_password(last_state, username, password_two) === nil
   end
 
 end

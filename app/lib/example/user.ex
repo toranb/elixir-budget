@@ -21,4 +21,22 @@ defmodule Example.User do
       |> validate_length(:password, min: 8, max: 20, message: "password must be 8-20 characters")
   end
 
+  def transform(users) do
+    Enum.reduce(users, %{}, fn(%Example.User{id: id, username: username, hash: hash}, acc) ->
+      Map.put(acc, id, {username, hash})
+    end)
+  end
+
+  def find_with_username_and_password(users, username, password) do
+    case Enum.filter(users, fn {_, {k, _}} -> k == username end) do
+      [{id, {_username, hash}}] ->
+        if Example.Password.verify(password, hash) do
+          id
+        end
+      [] ->
+        Example.Password.dummy_verify()
+        nil
+    end
+  end
+
 end

@@ -4,12 +4,9 @@ defmodule ExampleWeb.RegistrationControllerTest do
   alias Example.User
   alias Example.Users
 
-  import Plug.Conn, only: [get_session: 2]
-
   @name "toran"
   @password "abcd1234"
   @id "88EA874FB8A1459439C74D11A78BA0CCB24B4137B9E16B6A7FB63D1FBB42B818"
-  @id_two "875C807AE0F492AAF5897D7693A628AE5E54801CD73C651EC98088898FA56E0C"
   @login %{username: @name, password: @password}
 
   test "successful registration will put user into the database and redirect", %{conn: conn} do
