@@ -47,7 +47,11 @@ defmodule Example.MixProject do
       {:absinthe, "~> 1.4.16"},
       {:plug_cowboy, "~> 2.0"},
       {:bcrypt_elixir, "~> 1.1"},
-      {:mix_test_watch, "~> 0.8", only: :dev, runtime: false}
+      {:mix_test_watch, "~> 0.8", only: :dev, runtime: false},
+      {:floki, "~> 0.20.0"},
+      {:httpoison, "~> 1.5"},
+      {:local_cluster, "~> 1.0", only: [:test]},
+      {:schism, "~> 1.0", only: [:dev, :test]}
     ]
   end
 

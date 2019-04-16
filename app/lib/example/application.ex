@@ -12,8 +12,11 @@ defmodule Example.Application do
       ExampleWeb.Endpoint,
       {Registry, keys: :unique, name: Example.Registry},
       Example.Logon,
-      Example.Collection
+      Example.Collection,
+      Example.ClusterSync
     ]
+
+    :pg2.create(:example)
 
     Example.UserCache.create()
     Example.CategoryCache.create()

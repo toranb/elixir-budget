@@ -6,6 +6,10 @@ defmodule Example.UserCache do
     :ets.new(@table, [:named_table, :set, :public, read_concurrency: true])
   end
 
+  def all do
+    :ets.tab2list(@table)
+  end
+
   def insert(id, username, hash) do
     :ets.insert(@table, {id, {username, hash}})
   end

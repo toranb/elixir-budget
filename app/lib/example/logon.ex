@@ -8,13 +8,14 @@ defmodule Example.Logon do
   alias Example.Password
 
   def start_link(_args) do
-    GenServer.start_link(__MODULE__, :ok, name: via(:logon))
+    GenServer.start_link(__MODULE__, :ok, name: __MODULE__)
   end
-
-  defp via(name), do: Example.Registry.via(name)
 
   @impl GenServer
   def init(:ok) do
+    :net_kernel.monitor_nodes(true)
+
+    :pg2.join(:example, self())
     Users.all() |> UserCache.insert
     {:ok, nil, {:continue, :init}}
   end
@@ -32,8 +33,8 @@ defmodule Example.Logon do
     UserCache.find_with_username_and_password(username, password)
   end
 
-  def put(name, username, password) do
-    GenServer.call(via(name), {:put, username, password})
+  def put(_name, username, password) do
+    GenServer.call(__MODULE__, {:put, username, password})
   end
 
   @impl GenServer
@@ -43,11 +44,33 @@ defmodule Example.Logon do
     changeset = User.changeset(%User{}, %{id: id, username: username, password: password, hash: hash})
     case Users.insert(changeset) do
       {:ok, _result} ->
-        UserCache.insert(id, username, hash)
+        members = :pg2.get_members(:example)
+        Enum.map(members, fn (pid) ->
+          GenServer.cast(pid, {:merge, id, username, hash})
+        end)
+
         {:reply, {:ok, {id, username}}, state}
       {:error, changeset} ->
         {_key, {message, _}} = Enum.find(changeset.errors, fn(i) -> i end)
         {:reply, {:error, {id, message}}, state}
     end
+  end
+
+  @impl GenServer
+  def handle_cast({:merge, id, username, hash}, state) do
+    UserCache.insert(id, username, hash)
+    {:noreply, state}
+  end
+
+  @impl GenServer
+  def handle_info({:nodeup, node}, state) do
+    for {id, {username, hash}} <- UserCache.all() do
+      GenServer.cast({__MODULE__, node}, {:merge, id, username, hash})
+    end
+    {:noreply, state}
+  end
+
+  def handle_info(_msg, state) do
+    {:noreply, state}
   end
 end

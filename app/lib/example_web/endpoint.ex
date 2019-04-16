@@ -43,4 +43,20 @@ defmodule ExampleWeb.Endpoint do
     signing_salt: "SDRzZTsP"
 
   plug ExampleWeb.Router
+
+  defp port do
+    name = Node.self()
+    env =
+      name
+      |> Atom.to_string
+      |> String.replace(~r/@.*$/, "")
+      |> String.upcase
+
+    String.to_integer(System.get_env("#{env}_PORT") || "4000")
+  end
+
+  def init(_key, config) do
+    {:ok, Keyword.put(config, :http, [:inet6, port: port()])}
+  end
+
 end

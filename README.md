@@ -14,7 +14,7 @@ To run the app with docker
 
 ```bash
 docker-compose build
-docker-compose up
+docker-compose up --scale app=2
 ```
 
 3) visit http://localhost
