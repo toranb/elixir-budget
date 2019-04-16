@@ -1,6 +1,7 @@
 defmodule Example.CategoriesTest do
   use Example.DataCase, async: false
 
+  alias Example.Repo
   alias Example.Category
   alias Example.Categories
 
@@ -23,9 +24,24 @@ defmodule Example.CategoriesTest do
     assert name == "bar"
   end
 
+  test "changeset is invalid if category already exists" do
+    %Category{}
+      |> Category.changeset(@category_one)
+      |> Repo.insert
+
+    duplicate =
+      %Category{}
+      |> Category.changeset(@category_one)
+    assert {:error, changeset} = Repo.insert(duplicate)
+    refute changeset.valid?
+    assert Map.get(changeset, :errors) == [id: {"category already exists", [constraint: :unique, constraint_name: "categories_pkey"]}]
+  end
+
   defp insert_categories(categories) do
     Enum.each(categories, fn(category) ->
-      Categories.insert!(category)
+      %Category{}
+        |> Category.changeset(category)
+        |> Repo.insert
     end)
   end
 end
