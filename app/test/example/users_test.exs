@@ -1,5 +1,5 @@
 defmodule Example.UsersTest do
-  use Example.DataCase, async: true
+  use Example.DataCase, async: false
 
   alias Example.Repo
   alias Example.User

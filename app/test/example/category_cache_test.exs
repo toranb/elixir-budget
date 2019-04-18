@@ -1,5 +1,5 @@
 defmodule Example.CategoryCacheTest do
-  use Example.DataCase, async: true
+  use Example.DataCase, async: false
 
   require Logger
 

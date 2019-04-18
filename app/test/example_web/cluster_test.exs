@@ -5,11 +5,15 @@ defmodule ExampleWeb.ClusterTest do
   @node2 "http://localhost:4002"
   @password "abcd1234"
 
-  setup_all do
+  setup do
     System.put_env("EXAMPLE1_PORT", "4001")
     System.put_env("EXAMPLE2_PORT", "4002")
 
     launch_server()
+
+    on_exit fn ->
+      Example.Repo.delete_all(Example.User)
+    end
 
     {:ok, response: %HTTPoison.Response{}, login: %{username: random_string(), password: @password}}
   end
