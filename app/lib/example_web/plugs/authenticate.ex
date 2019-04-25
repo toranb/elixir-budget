@@ -12,7 +12,8 @@ defmodule ExampleWeb.Authenticate do
       id ->
         username = Example.Logon.get(:logon, "#{id}")
 
-        put_private(conn, :absinthe, %{context: %{current_user: id}})
+        conn
+        |> put_private(:absinthe, %{context: %{current_user: id}})
         |> assign(:current_user, %{id: id, username: username})
     end
   end

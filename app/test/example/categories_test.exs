@@ -11,7 +11,7 @@ defmodule Example.CategoriesTest do
 
   test "all will return any inserted category" do
     categories = Categories.all()
-    assert Enum.count(categories) == 0
+    assert Enum.empty?(categories)
 
     insert_categories([@category_one, @category_two])
 

@@ -47,7 +47,8 @@ defmodule Example.MixProject do
       {:absinthe, "~> 1.4.16"},
       {:plug_cowboy, "~> 2.0"},
       {:bcrypt_elixir, "~> 1.1"},
-      {:mix_test_watch, "~> 0.8", only: :dev, runtime: false}
+      {:mix_test_watch, "~> 0.8", only: :dev, runtime: false},
+      {:credo, "~> 1.0.5", only: [:dev, :test], runtime: false}
     ]
   end
 

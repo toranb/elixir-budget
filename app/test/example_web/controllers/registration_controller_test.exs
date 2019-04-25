@@ -33,6 +33,6 @@ defmodule ExampleWeb.RegistrationControllerTest do
     for {"location", value} <- result.resp_headers, do: assert(value == "/signup")
 
     users = Users.all()
-    assert Enum.count(users) == 0
+    assert Enum.empty?(users)
   end
 end
