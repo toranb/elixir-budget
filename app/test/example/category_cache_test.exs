@@ -12,7 +12,7 @@ defmodule Example.CategoryCacheTest do
   @category_two %{id: @id_two, name: "bar"}
 
   test "insert all adds each category to ets" do
-    create_ets_table()
+    delete_categories_cache()
 
     insert_categories([@category_one, @category_two])
 
@@ -27,25 +27,17 @@ defmodule Example.CategoryCacheTest do
     assert name == "bar"
   end
 
-  defp create_ets_table do
-    delete_ets_table()
-    CategoryCache.create()
-    rescue
-      _ ->
-        Logger.debug "create_ets_table failed"
-  end
-
-  defp delete_ets_table do
-    :ets.delete_all_objects(:categories_table)
-    rescue
-      _ ->
-        Logger.debug "delete_ets_table failed"
-  end
-
   defp insert_categories(categories) do
     Enum.each(categories, fn(category) ->
       Categories.insert!(category)
     end)
+  end
+
+  defp delete_categories_cache do
+    Cachex.clear(:categories_cache)
+    rescue
+      _ ->
+        Logger.debug "cachex clear failed"
   end
 
 end

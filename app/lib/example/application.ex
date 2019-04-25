@@ -13,15 +13,14 @@ defmodule Example.Application do
       Example.Repo,
       ExampleWeb.Endpoint,
       {Registry, keys: :unique, name: Example.Registry},
-      worker(Cachex, [:users_cache, []]),
+      %{id: :users_cache, start: {Cachex, :start_link, [:users_cache, []]}},
+      %{id: :categories_cache, start: {Cachex, :start_link, [:categories_cache, []]}},
       Example.Logon,
       Example.Collection,
       Example.ClusterSync
     ]
 
     :pg2.create(:example)
-
-    Example.CategoryCache.create()
 
     # See https://hexdocs.pm/elixir/Supervisor.html
     # for other strategies and supported options
