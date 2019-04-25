@@ -6,6 +6,8 @@ defmodule ExampleWeb.ClusterTest do
   @password "abcd1234"
 
   setup do
+    LocalCluster.start()
+
     System.put_env("EXAMPLE1_PORT", "4001")
     System.put_env("EXAMPLE2_PORT", "4002")
 
