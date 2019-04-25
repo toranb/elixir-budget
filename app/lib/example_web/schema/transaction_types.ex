@@ -7,6 +7,9 @@ defmodule ExampleWeb.Schema.TransactionTypes do
     field(:amount, :integer)
     field(:date, :naive_datetime)
     field(:category_id, :string)
-    field(:category, :category)
+
+    field :category, :category do
+      resolve(&ExampleWeb.Resolvers.Transaction.category_for_transaction/3)
+    end
   end
 end
