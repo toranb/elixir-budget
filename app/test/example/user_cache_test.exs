@@ -15,7 +15,7 @@ defmodule Example.UserCacheTest do
   @valid_attrs %{id: @id, username: @username, password: @password}
 
   test "insert all adds each user to ets" do
-    create_ets_table()
+    delete_users_cache()
 
     hash_one = "987654321"
     attrs = @valid_attrs |> Map.put(:hash, hash_one)
@@ -35,8 +35,8 @@ defmodule Example.UserCacheTest do
 
     Users.all() |> UserCache.insert
 
-    results = :ets.match(:users_table, {:"$1", :"$2"})
-    users = Enum.reduce(results, %{}, fn([id, {username, hash}], acc) ->
+    results = UserCache.all()
+    users = Enum.reduce(results, %{}, fn({id, {username, hash}}, acc) ->
       Map.put(acc, id, {username, hash})
     end)
 
@@ -46,7 +46,7 @@ defmodule Example.UserCacheTest do
   end
 
   test "find with username and password" do
-    create_ets_table()
+    delete_users_cache()
 
     hash_one = Password.hash(@password)
     attrs = @valid_attrs |> Map.put(:hash, hash_one)
@@ -69,6 +69,7 @@ defmodule Example.UserCacheTest do
     Users.all() |> UserCache.insert
 
     assert UserCache.find_with_username_and_password(@username, @password) === @id
+    assert UserCache.find_with_username_and_password(@username, @password) === @id
     assert UserCache.find_with_username_and_password(@username, "abc12") === nil
     assert UserCache.find_with_username_and_password("jarrod", password_two) === two
     assert UserCache.find_with_username_and_password("jarrod", "") === nil
@@ -76,7 +77,7 @@ defmodule Example.UserCacheTest do
   end
 
   test "find with id" do
-    create_ets_table()
+    delete_users_cache()
 
     hash_one = Password.hash(@password)
     attrs = @valid_attrs |> Map.put(:hash, hash_one)
@@ -100,25 +101,18 @@ defmodule Example.UserCacheTest do
     Users.all() |> UserCache.insert
 
     assert UserCache.find_with_id(@id) === @username
+    assert UserCache.find_with_id(@id) === @username
     assert UserCache.find_with_id(two) === username_two
     assert UserCache.find_with_id("x") === nil
     assert UserCache.find_with_id("") === nil
     assert UserCache.find_with_id(nil) === nil
   end
 
-  defp create_ets_table do
-    delete_ets_table()
-    UserCache.create()
+  defp delete_users_cache do
+    Cachex.clear(:users_cache)
     rescue
       _ ->
-        Logger.debug "create_ets_table failed"
-  end
-
-  defp delete_ets_table do
-    :ets.delete_all_objects(:users_table)
-    rescue
-      _ ->
-        Logger.debug "delete_ets_table failed"
+        Logger.debug "cachex clear failed"
   end
 
 end

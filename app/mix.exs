@@ -20,7 +20,7 @@ defmodule Example.MixProject do
   def application do
     [
       mod: {Example.Application, []},
-      extra_applications: [:logger, :runtime_tools]
+      extra_applications: [:logger, :runtime_tools, :cachex]
     ]
   end
 
@@ -51,7 +51,8 @@ defmodule Example.MixProject do
       {:floki, "~> 0.20.0"},
       {:httpoison, "~> 1.5"},
       {:local_cluster, "~> 1.0", only: [:test]},
-      {:schism, "~> 1.0", only: [:dev, :test]}
+      {:schism, "~> 1.0", only: [:dev, :test]},
+      {:cachex, "~> 3.1"}
     ]
   end
 

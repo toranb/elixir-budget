@@ -6,11 +6,14 @@ defmodule Example.Application do
   use Application
 
   def start(_type, _args) do
+    import Supervisor.Spec
+
     # List all child processes to be supervised
     children = [
       Example.Repo,
       ExampleWeb.Endpoint,
       {Registry, keys: :unique, name: Example.Registry},
+      worker(Cachex, [:users_cache, []]),
       Example.Logon,
       Example.Collection,
       Example.ClusterSync
@@ -18,7 +21,6 @@ defmodule Example.Application do
 
     :pg2.create(:example)
 
-    Example.UserCache.create()
     Example.CategoryCache.create()
 
     # See https://hexdocs.pm/elixir/Supervisor.html
