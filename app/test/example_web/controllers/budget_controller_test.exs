@@ -17,11 +17,15 @@ defmodule ExampleWeb.BudgetControllerTest do
     register = post(conn, Routes.registration_path(conn, :create, @login))
     login = post(register, Routes.login_path(conn, :create, @login))
     budget = get(login, Routes.budget_path(conn, :index))
-    assert String.match?(html_response(budget, 200), ~r/.*[{"id":"acbd18db4cc2f85cedef654fccc4a4d8","name":"foo"},{"id":"37b51d194a7513e45b56f6524f2d51f2","name":"bar"}].*/)
+
+    assert String.match?(
+             html_response(budget, 200),
+             ~r/.*[{"id":"acbd18db4cc2f85cedef654fccc4a4d8","name":"foo"},{"id":"37b51d194a7513e45b56f6524f2d51f2","name":"bar"}].*/
+           )
   end
 
   defp insert_categories(categories) do
-    Enum.each(categories, fn(category) ->
+    Enum.each(categories, fn category ->
       Categories.insert!(category)
     end)
   end

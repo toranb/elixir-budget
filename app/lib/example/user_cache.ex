@@ -1,5 +1,4 @@
 defmodule Example.UserCache do
-
   @table :users_table
 
   def create do
@@ -11,7 +10,7 @@ defmodule Example.UserCache do
   end
 
   def insert(users) do
-    Enum.each(users, fn(%Example.User{id: id, username: username, hash: hash}) ->
+    Enum.each(users, fn %Example.User{id: id, username: username, hash: hash} ->
       insert(id, username, hash)
     end)
   end
@@ -20,6 +19,7 @@ defmodule Example.UserCache do
     case :ets.lookup(@table, id) do
       [{_, {username, _}}] ->
         username
+
       [] ->
         nil
     end
@@ -33,10 +33,10 @@ defmodule Example.UserCache do
         if Example.Password.verify(password, hash) do
           id
         end
+
       [] ->
         Example.Password.dummy_verify()
         nil
     end
   end
-
 end

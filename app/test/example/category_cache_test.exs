@@ -16,36 +16,35 @@ defmodule Example.CategoryCacheTest do
 
     insert_categories([@category_one, @category_two])
 
-    Categories.all() |> CategoryCache.insert
+    Categories.all() |> CategoryCache.insert()
 
     categories = CategoryCache.all()
     assert Enum.count(categories) == 2
 
-    %{name: name} = Enum.find(categories, fn(c) -> c.id === @id end)
+    %{name: name} = Enum.find(categories, fn c -> c.id === @id end)
     assert name == "foo"
-    %{name: name} = Enum.find(categories, fn(c) -> c.id === @id_two end)
+    %{name: name} = Enum.find(categories, fn c -> c.id === @id_two end)
     assert name == "bar"
   end
 
   defp create_ets_table do
     delete_ets_table()
     CategoryCache.create()
-    rescue
-      _ ->
-        Logger.debug "create_ets_table failed"
+  rescue
+    _ ->
+      Logger.debug("create_ets_table failed")
   end
 
   defp delete_ets_table do
     :ets.delete_all_objects(:categories_table)
-    rescue
-      _ ->
-        Logger.debug "delete_ets_table failed"
+  rescue
+    _ ->
+      Logger.debug("delete_ets_table failed")
   end
 
   defp insert_categories(categories) do
-    Enum.each(categories, fn(category) ->
+    Enum.each(categories, fn category ->
       Categories.insert!(category)
     end)
   end
-
 end

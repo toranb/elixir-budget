@@ -17,7 +17,7 @@ defmodule ExampleWeb.PageControllerTest do
     login = post(conn, Routes.login_path(conn, :create, @login))
     assert html_response(login, 302) =~ "redirected"
     assert get_flash(login, :error) == nil
-    for {"location", value} <- login.resp_headers, do: assert value == "/budget"
+    for {"location", value} <- login.resp_headers, do: assert(value == "/budget")
 
     session_id = get_session(login, :user_id)
     assert session_id == @id

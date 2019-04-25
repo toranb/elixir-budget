@@ -26,19 +26,21 @@ defmodule Example.UserCacheTest do
     jarrod_attrs = %{id: two, username: "jarrod", password: password_two, hash: hash_two}
 
     %User{}
-      |> User.changeset(jarrod_attrs)
-      |> Repo.insert
+    |> User.changeset(jarrod_attrs)
+    |> Repo.insert()
 
     %User{}
-      |> User.changeset(attrs)
-      |> Repo.insert
+    |> User.changeset(attrs)
+    |> Repo.insert()
 
-    Users.all() |> UserCache.insert
+    Users.all() |> UserCache.insert()
 
     results = :ets.match(:users_table, {:"$1", :"$2"})
-    users = Enum.reduce(results, %{}, fn([id, {username, hash}], acc) ->
-      Map.put(acc, id, {username, hash})
-    end)
+
+    users =
+      Enum.reduce(results, %{}, fn [id, {username, hash}], acc ->
+        Map.put(acc, id, {username, hash})
+      end)
 
     assert Map.keys(users) == [two, @id]
     assert Map.get(users, two) == {"jarrod", hash_two}
@@ -57,16 +59,16 @@ defmodule Example.UserCacheTest do
     jarrod_attrs = %{id: two, username: "jarrod", password: password_two, hash: hash_two}
 
     %User{}
-      |> User.changeset(jarrod_attrs)
-      |> Repo.insert
+    |> User.changeset(jarrod_attrs)
+    |> Repo.insert()
 
     %User{}
-      |> User.changeset(attrs)
-      |> Repo.insert
+    |> User.changeset(attrs)
+    |> Repo.insert()
 
     assert UserCache.find_with_username_and_password(@username, @password) === nil
 
-    Users.all() |> UserCache.insert
+    Users.all() |> UserCache.insert()
 
     assert UserCache.find_with_username_and_password(@username, @password) === @id
     assert UserCache.find_with_username_and_password(@username, "abc12") === nil
@@ -88,16 +90,16 @@ defmodule Example.UserCacheTest do
     jarrod_attrs = %{id: two, username: username_two, password: password_two, hash: hash_two}
 
     %User{}
-      |> User.changeset(jarrod_attrs)
-      |> Repo.insert
+    |> User.changeset(jarrod_attrs)
+    |> Repo.insert()
 
     %User{}
-      |> User.changeset(attrs)
-      |> Repo.insert
+    |> User.changeset(attrs)
+    |> Repo.insert()
 
     assert UserCache.find_with_id(@id) === nil
 
-    Users.all() |> UserCache.insert
+    Users.all() |> UserCache.insert()
 
     assert UserCache.find_with_id(@id) === @username
     assert UserCache.find_with_id(two) === username_two
@@ -109,16 +111,15 @@ defmodule Example.UserCacheTest do
   defp create_ets_table do
     delete_ets_table()
     UserCache.create()
-    rescue
-      _ ->
-        Logger.debug "create_ets_table failed"
+  rescue
+    _ ->
+      Logger.debug("create_ets_table failed")
   end
 
   defp delete_ets_table do
     :ets.delete_all_objects(:users_table)
-    rescue
-      _ ->
-        Logger.debug "delete_ets_table failed"
+  rescue
+    _ ->
+      Logger.debug("delete_ets_table failed")
   end
-
 end

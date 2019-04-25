@@ -19,5 +19,4 @@ defmodule Example.HashTest do
     jarrod = Hash.hmac(:user, "jarrod")
     assert jarrod == @id_two
   end
-
 end

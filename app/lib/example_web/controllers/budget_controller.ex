@@ -4,9 +4,10 @@ defmodule ExampleWeb.BudgetController do
   alias Example.Collection
 
   def index(conn, _params) do
-    {:ok, categories } =
+    {:ok, categories} =
       Collection.all(:collection)
       |> Phoenix.json_library().encode()
+
     render(conn, "index.html", %{categories: categories})
   end
 end

@@ -13,14 +13,22 @@ defmodule Example.UsersTest do
     attrs = @valid_attrs |> Map.put(:username, "abc")
     changeset = User.changeset(%User{}, attrs)
     refute changeset.valid?
-    assert Map.get(changeset, :errors) == [username: {"username must be 4-12 characters", [count: 4, validation: :length, kind: :min]}]
+
+    assert Map.get(changeset, :errors) == [
+             username:
+               {"username must be 4-12 characters", [count: 4, validation: :length, kind: :min]}
+           ]
   end
 
   test "changeset is invalid if username is too long" do
     attrs = @valid_attrs |> Map.put(:username, "abcdefghijklm")
     changeset = User.changeset(%User{}, attrs)
     refute changeset.valid?
-    assert Map.get(changeset, :errors) == [username: {"username must be 4-12 characters", [count: 12, validation: :length, kind: :max]}]
+
+    assert Map.get(changeset, :errors) == [
+             username:
+               {"username must be 4-12 characters", [count: 12, validation: :length, kind: :max]}
+           ]
   end
 
   test "changeset is fine with 4 char username" do
@@ -41,14 +49,22 @@ defmodule Example.UsersTest do
     attrs = @valid_attrs |> Map.put(:password, "abcdefg")
     changeset = User.changeset(%User{}, attrs)
     refute changeset.valid?
-    assert Map.get(changeset, :errors) == [password: {"password must be 8-20 characters", [count: 8, validation: :length, kind: :min]}]
+
+    assert Map.get(changeset, :errors) == [
+             password:
+               {"password must be 8-20 characters", [count: 8, validation: :length, kind: :min]}
+           ]
   end
 
   test "changeset is invalid if password is too long" do
     attrs = @valid_attrs |> Map.put(:password, "abcdefghijklmnopqrstu")
     changeset = User.changeset(%User{}, attrs)
     refute changeset.valid?
-    assert Map.get(changeset, :errors) == [password: {"password must be 8-20 characters", [count: 20, validation: :length, kind: :max]}]
+
+    assert Map.get(changeset, :errors) == [
+             password:
+               {"password must be 8-20 characters", [count: 20, validation: :length, kind: :max]}
+           ]
   end
 
   test "changeset is fine with 20 char password" do
@@ -67,14 +83,17 @@ defmodule Example.UsersTest do
 
   test "changeset is invalid if username is used already" do
     %User{}
-      |> User.changeset(@valid_attrs)
-      |> Repo.insert
+    |> User.changeset(@valid_attrs)
+    |> Repo.insert()
 
     duplicate =
       %User{}
       |> User.changeset(@valid_attrs)
-    assert {:error, changeset} = Repo.insert(duplicate)
-    assert Map.get(changeset, :errors) == [id: {"username already exists", [constraint: :unique, constraint_name: "users_pkey"]}]
-  end
 
+    assert {:error, changeset} = Repo.insert(duplicate)
+
+    assert Map.get(changeset, :errors) == [
+             id: {"username already exists", [constraint: :unique, constraint_name: "users_pkey"]}
+           ]
+  end
 end

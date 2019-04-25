@@ -3,11 +3,10 @@ defmodule Example.Category do
 
   @primary_key {:id, :string, []}
   schema "categories" do
-    field :name, :string
+    field(:name, :string)
 
-    has_many :transactions, Example.Transaction, foreign_key: :category_id
+    has_many(:transactions, Example.Transaction, foreign_key: :category_id)
 
     timestamps()
   end
-
 end

@@ -12,7 +12,7 @@ defmodule Example.Collection do
 
   @impl GenServer
   def init(:ok) do
-    Categories.all() |> CategoryCache.insert
+    Categories.all() |> CategoryCache.insert()
     {:ok, nil, {:continue, :init}}
   end
 
@@ -24,5 +24,4 @@ defmodule Example.Collection do
   def all(_name) do
     CategoryCache.all()
   end
-
 end

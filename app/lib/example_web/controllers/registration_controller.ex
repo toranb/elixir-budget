@@ -9,14 +9,17 @@ defmodule ExampleWeb.RegistrationController do
     case Example.Logon.put(:logon, username, password) do
       {:ok, {_id, _username}} ->
         path = Routes.login_path(conn, :index)
+
         conn
-          |> put_flash(:info, "Account Created!")
-          |> redirect(to: path)
+        |> put_flash(:info, "Account Created!")
+        |> redirect(to: path)
+
       {:error, {_id, message}} ->
         path = Routes.registration_path(conn, :index)
+
         conn
-          |> put_flash(:error, message)
-          |> redirect(to: path)
+        |> put_flash(:error, message)
+        |> redirect(to: path)
     end
   end
 end

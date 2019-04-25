@@ -5,9 +5,8 @@ defmodule ExampleWeb.LogoutController do
 
   def index(conn, _params) do
     conn
-      |> clear_session()
-      |> configure_session(drop: true)
-      |> redirect(to: Routes.login_path(conn, :index))
+    |> clear_session()
+    |> configure_session(drop: true)
+    |> redirect(to: Routes.login_path(conn, :index))
   end
-
 end

@@ -9,13 +9,15 @@ defmodule ExampleWeb.LoginController do
     case Example.Logon.get_by_username_and_password(:logon, username, password) do
       nil ->
         conn
-          |> put_flash(:error, "incorrect username or password")
-          |> render("index.html")
+        |> put_flash(:error, "incorrect username or password")
+        |> render("index.html")
+
       id ->
         path = Routes.budget_path(conn, :index)
+
         conn
-          |> put_session(:user_id, id)
-          |> redirect(to: path)
+        |> put_session(:user_id, id)
+        |> redirect(to: path)
     end
   end
 end

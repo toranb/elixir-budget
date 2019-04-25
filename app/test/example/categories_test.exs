@@ -17,14 +17,14 @@ defmodule Example.CategoriesTest do
 
     categories = Categories.all()
     assert Enum.count(categories) == 2
-    %Category{:name => name} = Enum.find(categories, fn(c) -> c.id == @id end)
+    %Category{:name => name} = Enum.find(categories, fn c -> c.id == @id end)
     assert name == "foo"
-    %Category{:name => name} = Enum.find(categories, fn(c) -> c.id == @id_two end)
+    %Category{:name => name} = Enum.find(categories, fn c -> c.id == @id_two end)
     assert name == "bar"
   end
 
   defp insert_categories(categories) do
-    Enum.each(categories, fn(category) ->
+    Enum.each(categories, fn category ->
       Categories.insert!(category)
     end)
   end

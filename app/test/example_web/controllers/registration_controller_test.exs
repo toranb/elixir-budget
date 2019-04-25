@@ -14,7 +14,7 @@ defmodule ExampleWeb.RegistrationControllerTest do
     assert html_response(result, 302) =~ "redirected"
     assert get_flash(result, :error) == nil
     assert get_flash(result, :info) == "Account Created!"
-    for {"location", value} <- result.resp_headers, do: assert value == "/"
+    for {"location", value} <- result.resp_headers, do: assert(value == "/")
 
     users = Users.all()
     assert Enum.count(users) == 1
@@ -30,7 +30,7 @@ defmodule ExampleWeb.RegistrationControllerTest do
     result = post(conn, Routes.registration_path(conn, :create, invalid))
     assert get_flash(result, :error) == "username must be 4-12 characters"
     assert get_flash(result, :info) == nil
-    for {"location", value} <- result.resp_headers, do: assert value == "/signup"
+    for {"location", value} <- result.resp_headers, do: assert(value == "/signup")
 
     users = Users.all()
     assert Enum.count(users) == 0
