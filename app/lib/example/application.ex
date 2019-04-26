@@ -11,6 +11,7 @@ defmodule Example.Application do
       Example.Repo,
       ExampleWeb.Endpoint,
       {Registry, keys: :unique, name: Example.Registry},
+      Example.Storage,
       Example.Logon,
       Example.Collection,
       Example.ClusterSync
