@@ -17,7 +17,7 @@ defmodule Example.Storage do
     end
   end
 
-  def command(name, cmds) when is_list(cmds) do
+  def command(name \\ name(), cmds) when is_list(cmds) do
     Redix.command(name, cmds)
   end
 

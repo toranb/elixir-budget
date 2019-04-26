@@ -5,7 +5,7 @@ defmodule Example.ClusterSync do
   @two_seconds :timer.seconds(2)
   @ten_seconds :timer.seconds(10)
 
-  alias Example.Clusters
+  alias Example.Storage
 
   def start_link(_args) do
     GenServer.start_link(__MODULE__, :ok, name: via(:sync))
@@ -24,23 +24,33 @@ defmodule Example.ClusterSync do
 
   @impl GenServer
   def handle_info(:write, state) do
-    Clusters.upsert_by(state)
+    %{id: id} = state
+    Storage.set(id, id)
+
     {:noreply, state}
   end
 
   @impl GenServer
   def handle_info(:query, state) do
-    %{:id => node} = state
+    %{id: id} = state
 
-    Clusters.all()
-      |> Enum.map(&Map.from_struct(&1))
-      |> Enum.filter(fn (%{:id => id}) -> id != node end)
-      |> Enum.map(fn (%{:id => id}) -> String.to_atom(id) end)
+    members()
+      |> Enum.filter(fn (node) -> node != id end)
+      |> Enum.map(&String.to_atom/1)
       |> Enum.map(&({&1, Node.ping(&1) == :pong}))
 
     Process.send_after(self(), :query, @ten_seconds)
 
     {:noreply, state}
+  end
+
+  def members do
+    case Storage.command(["SCAN", 0, "MATCH", "[^_]*", "COUNT", 999]) do
+      {:error, _ } ->
+        []
+      {:ok, [_given_index, node]} ->
+        node
+    end
   end
 
 end
