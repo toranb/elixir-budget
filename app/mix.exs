@@ -45,6 +45,7 @@ defmodule Example.MixProject do
       {:jason, "~> 1.0"},
       {:absinthe_plug, "~> 1.4"},
       {:absinthe, "~> 1.4.16"},
+      {:dataloader, "~> 1.0.6"},
       {:plug_cowboy, "~> 2.0"},
       {:bcrypt_elixir, "~> 1.1"},
       {:mix_test_watch, "~> 0.8", only: :dev, runtime: false},

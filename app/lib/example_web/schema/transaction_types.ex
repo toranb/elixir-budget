@@ -1,6 +1,8 @@
 defmodule ExampleWeb.Schema.TransactionTypes do
   use Absinthe.Schema.Notation
 
+  import Absinthe.Resolution.Helpers, only: [dataloader: 1]
+
   object :transaction do
     field(:id, :id)
     field(:description, :string)
@@ -8,8 +10,7 @@ defmodule ExampleWeb.Schema.TransactionTypes do
     field(:date, :naive_datetime)
     field(:category_id, :string)
 
-    field :category, :category do
-      resolve(&ExampleWeb.Resolvers.Transaction.category_for_transaction/3)
-    end
+    field :category, :category, resolve: dataloader(Transaction)
   end
+
 end

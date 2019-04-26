@@ -25,4 +25,19 @@ defmodule ExampleWeb.Schema do
       resolve(&Resolvers.Transaction.create_transaction/3)
     end
   end
+
+  def context(ctx) do
+    source = Dataloader.Ecto.new(Example.Repo)
+
+    loader =
+      Dataloader.new
+      |> Dataloader.add_source(Transaction, source)
+
+    Map.put(ctx, :loader, loader)
+  end
+
+  def plugins do
+    [Absinthe.Middleware.Dataloader] ++ Absinthe.Plugin.defaults()
+  end
+
 end
