@@ -14,11 +14,17 @@ defmodule ExampleWeb.Schema do
     end
   end
 
+  input_object :json do
+    field :email, :string
+    field :purchase_order, :integer
+  end
+
   mutation do
     @desc "Add transaction"
     field :create_transaction, type: :transaction do
       arg(:description, non_null(:string))
       arg(:amount, non_null(:integer))
+      arg(:meta, non_null(:json))
       arg(:date, non_null(:naive_datetime))
       arg(:category_id, non_null(:string))
 
