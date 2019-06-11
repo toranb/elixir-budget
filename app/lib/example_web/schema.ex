@@ -14,9 +14,14 @@ defmodule ExampleWeb.Schema do
     end
   end
 
-  input_object :json do
+  input_object :child do
     field :email, :string
-    field :purchase_order, :integer
+    field :number, :integer
+  end
+
+  input_object :meta do
+    field :name, :string
+    field :data, :child
   end
 
   mutation do
@@ -24,7 +29,7 @@ defmodule ExampleWeb.Schema do
     field :create_transaction, type: :transaction do
       arg(:description, non_null(:string))
       arg(:amount, non_null(:integer))
-      arg(:meta, non_null(:json))
+      arg(:meta, non_null(:meta))
       arg(:date, non_null(:naive_datetime))
       arg(:category_id, non_null(:string))
 
