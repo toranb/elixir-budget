@@ -4,8 +4,8 @@ defmodule Example.Meta do
   import Ecto.Changeset
 
   embedded_schema do
-    field :name, :string
-    field :data, :map
+    field(:name, :string)
+    embeds_one(:data, Example.Data, on_replace: :update)
   end
 
   @optional_fields [
@@ -16,6 +16,7 @@ defmodule Example.Meta do
   @doc false
   def changeset(%__MODULE__{} = meta, attrs) do
     meta
-    |> cast(attrs, @optional_fields)
+    |> cast(attrs, [:name])
+    |> cast_embed(:data, with: &Example.Data.changeset/2)
   end
 end

@@ -8,7 +8,7 @@ defmodule Example.Transaction do
     field(:amount, :integer)
     field(:date, :naive_datetime)
 
-    embeds_one :meta, Example.Meta, on_replace: :update
+    embeds_one(:meta, Example.Meta, on_replace: :update)
 
     belongs_to(:user, Example.User, foreign_key: :user_id, type: :string)
     belongs_to(:category, Example.Category, foreign_key: :category_id, type: :string)
@@ -18,7 +18,7 @@ defmodule Example.Transaction do
 
   def changeset(transaction, params \\ %{}) do
     transaction
-      |> cast(params, [:description, :amount])
-      |> cast_embed(:meta, with: &Example.Meta.changeset/2)
+    |> cast(params, [:description, :amount])
+    |> cast_embed(:meta, with: &Example.Meta.changeset/2)
   end
 end
