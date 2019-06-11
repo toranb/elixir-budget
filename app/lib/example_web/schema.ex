@@ -14,14 +14,20 @@ defmodule ExampleWeb.Schema do
     end
   end
 
-  input_object :child do
+  input_object :item do
+    field :type, :string
+    field :colors, list_of(:string)
+  end
+
+  input_object :data do
     field :email, :string
     field :number, :integer
   end
 
   input_object :meta do
     field :name, :string
-    field :data, :child
+    field :data, :data
+    field :items, list_of(:item)
   end
 
   input_object :update_transaction_params do
