@@ -16,4 +16,12 @@ defmodule ExampleWeb.Resolvers.Transaction do
   def create_transaction(_parent, _args, _resolution) do
     {:error, "Access denied"}
   end
+
+  def update_transaction(_parent, args, %{context: %{current_user: _id}}) do
+    args |> Transactions.update()
+  end
+
+  def update_transaction(_parent, _args, _resolution) do
+    {:error, "Access denied"}
+  end
 end

@@ -24,6 +24,12 @@ defmodule ExampleWeb.Schema do
     field :data, :child
   end
 
+  input_object :update_transaction_params do
+    field :description, :string
+    field :amount, :integer
+    field :meta, :meta
+  end
+
   mutation do
     @desc "Add transaction"
     field :create_transaction, type: :transaction do
@@ -34,6 +40,14 @@ defmodule ExampleWeb.Schema do
       arg(:category_id, non_null(:string))
 
       resolve(&Resolvers.Transaction.create_transaction/3)
+    end
+
+    @desc "Edit transaction"
+    field :update_transaction, type: :transaction do
+      arg(:id, non_null(:id))
+      arg(:transaction, :update_transaction_params)
+
+      resolve(&Resolvers.Transaction.update_transaction/3)
     end
   end
 

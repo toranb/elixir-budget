@@ -14,4 +14,12 @@ defmodule Example.Transactions do
     |> Repo.preload(:category)
     |> Repo.insert()
   end
+
+  def update(%{id: id, transaction: transaction}) do
+    Transaction
+    |> Repo.get(id)
+    |> Repo.preload(:category)
+    |> Transaction.changeset(transaction)
+    |> Repo.update()
+  end
 end
