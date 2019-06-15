@@ -2,6 +2,7 @@ defmodule Example.Meta do
   use Ecto.Schema
 
   import Ecto.Changeset
+  import Example.EmbedsMany, only: [cast_embed_update: 4]
 
   embedded_schema do
     field(:name, :string)
@@ -16,6 +17,6 @@ defmodule Example.Meta do
     |> cast(attrs, [:id, :name])
     |> cast_embed(:data, with: &Example.Data.changeset/2)
     |> cast_embed(:items, with: &Example.Item.changeset/2)
-    |> cast_embed(:numbers, with: &Example.Number.changeset/2)
+    |> cast_embed_update(:numbers, attrs, %Example.Number{})
   end
 end
