@@ -7,19 +7,15 @@ defmodule Example.Meta do
     field(:name, :string)
     embeds_one(:data, Example.Data, on_replace: :update)
     embeds_many(:items, Example.Item, on_replace: :delete)
+    embeds_many(:numbers, Example.Number, on_replace: :delete)
   end
-
-  @optional_fields [
-    :name,
-    :data,
-    :items
-  ]
 
   @doc false
   def changeset(%__MODULE__{} = meta, attrs) do
     meta
-    |> cast(attrs, [:name])
+    |> cast(attrs, [:id, :name])
     |> cast_embed(:data, with: &Example.Data.changeset/2)
     |> cast_embed(:items, with: &Example.Item.changeset/2)
+    |> cast_embed(:numbers, with: &Example.Number.changeset/2)
   end
 end

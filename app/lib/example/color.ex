@@ -1,17 +1,19 @@
-defmodule Example.Data do
+defmodule Example.Color do
   use Ecto.Schema
 
   import Ecto.Changeset
 
   embedded_schema do
-    field(:email, :string)
-    field(:number, :integer)
+    field :one, :string
+    field :two, :string
+    field :three, :string
   end
 
   @optional_fields [
     :id,
-    :email,
-    :number
+    :one,
+    :two,
+    :three
   ]
 
   @doc false

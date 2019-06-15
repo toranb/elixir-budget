@@ -1,17 +1,15 @@
-defmodule Example.Data do
+defmodule Example.Number do
   use Ecto.Schema
 
   import Ecto.Changeset
 
   embedded_schema do
-    field(:email, :string)
-    field(:number, :integer)
+    field :value, :string
   end
 
   @optional_fields [
     :id,
-    :email,
-    :number
+    :value
   ]
 
   @doc false

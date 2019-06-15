@@ -14,9 +14,22 @@ defmodule ExampleWeb.Schema do
     end
   end
 
+  input_object :number do
+    field :id, :string
+    field :value, :string
+  end
+
+  input_object :color do
+    field :id, :string
+    field :one, :string
+    field :two, :string
+    field :three, :string
+  end
+
   input_object :item do
+    field :id, :string
     field :type, :string
-    field :colors, list_of(:string)
+    field :colors, list_of(:color)
   end
 
   input_object :data do
@@ -28,6 +41,7 @@ defmodule ExampleWeb.Schema do
     field :name, :string
     field :data, :data
     field :items, list_of(:item)
+    field :numbers, list_of(:number)
   end
 
   input_object :update_transaction_params do
