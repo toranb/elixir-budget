@@ -1,15 +1,30 @@
 defmodule Example.EmbedsMany do
-  alias Example.EmbedMany
+  import Ecto.Changeset
 
-  def cast_embed_update(%Ecto.Changeset{} = changeset, field, attrs, struct) do
-    %EmbedMany{updated: updated} =
+  def cast_embed_update(%Ecto.Changeset{} = changeset, field) do
+    updated =
       changeset
-      |> EmbedMany.new(field, attrs, struct)
-      |> EmbedMany.merge()
-      |> EmbedMany.append()
-      |> EmbedMany.apply_changeset()
+      |> cast_embed(field, with: &Example.Number.changeset/2)
 
-    changeset
-    |> Ecto.Changeset.put_change(field, updated)
+    numbers =
+      updated.changes[field]
+      |> Enum.map(fn changeset ->
+        case changeset.action do
+          :replace ->
+            {:ok, applied} = apply_action(changeset, :update)
+
+            changes =
+              applied
+              |> Map.from_struct()
+              |> Map.delete(:id)
+
+            %Ecto.Changeset{changeset | changes: changes, action: :update}
+
+          _ ->
+            changeset
+        end
+      end)
+
+    %Ecto.Changeset{updated | changes: %{numbers: numbers}}
   end
 end
