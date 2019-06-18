@@ -11,9 +11,8 @@ defmodule Example.EmbedsMany do
       |> get_change(field)
       |> Enum.map(&alter_action/1)
 
-    all_changes = Map.put(updated_changeset.changes, field, altered_changeset)
-
-    %Ecto.Changeset{updated_changeset | changes: all_changes}
+    updated_changeset
+    |> put_embed(field, altered_changeset)
   end
 
   def alter_action(%Ecto.Changeset{action: :replace} = changeset) do
