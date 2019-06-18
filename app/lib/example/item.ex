@@ -2,6 +2,7 @@ defmodule Example.Item do
   use Ecto.Schema
 
   import Ecto.Changeset
+  import Example.EmbedsMany, only: [cast_embed_many: 2]
 
   embedded_schema do
     field :type, :string
@@ -17,6 +18,6 @@ defmodule Example.Item do
   def changeset(%__MODULE__{} = meta, attrs) do
     meta
     |> cast(attrs, @optional_fields)
-    |> cast_embed(:colors, with: &Example.Color.changeset/2)
+    |> cast_embed_many(:colors)
   end
 end

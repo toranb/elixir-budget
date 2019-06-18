@@ -15,8 +15,8 @@ defmodule Example.Meta do
   def changeset(%__MODULE__{} = meta, attrs) do
     meta
     |> cast(attrs, [:id, :name])
-    |> cast_embed(:data, with: &Example.Data.changeset/2)
-    |> cast_embed(:items, with: &Example.Item.changeset/2)
+    |> cast_embed(:data)
+    |> cast_embed_many(:items)
     |> cast_embed_many(:numbers)
   end
 end
