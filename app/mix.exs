@@ -10,7 +10,8 @@ defmodule Example.MixProject do
       compilers: [:phoenix, :gettext] ++ Mix.compilers(),
       start_permanent: Mix.env() == :prod,
       aliases: aliases(),
-      deps: deps()
+      deps: deps(),
+      test_coverage: [tool: ExCoveralls]
     ]
   end
 
@@ -52,7 +53,8 @@ defmodule Example.MixProject do
       {:floki, "~> 0.20.0"},
       {:httpoison, "~> 1.5"},
       {:local_cluster, "~> 1.0", only: [:test]},
-      {:schism, "~> 1.0", only: [:dev, :test]}
+      {:schism, "~> 1.0", only: [:dev, :test]},
+      {:excoveralls, "~> 0.10", only: :test}
     ]
   end
 

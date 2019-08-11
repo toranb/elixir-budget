@@ -1,0 +1,21 @@
+{
+  "default_stop_words": [
+    "defmodule",
+    "defrecord",
+    "defimpl",
+    "def.+(.+\/\/.+).+do"
+  ],
+  "terminal_options": {
+    "file_column_width": 40
+  },
+  "coverage_options": {
+    "treat_no_relevant_lines_as_covered": true,
+    "output_dir": "cover/",
+    "minimum_coverage": 50
+  },
+  "skip_files": [
+    "test/support",
+    "test_helper.exs",
+    "lib/example_web/views"
+  ]
+}
